@@ -1,8 +1,6 @@
-import axios from "axios";
+import { Axios } from "./axios";
 
-const BASE_URL = "https://ca65609e4771cde72662.free.beeceptor.com/api/contacts";
-
-export const getContacts = () => axios.get(BASE_URL);
-export const addContact = (data) => axios.post(BASE_URL, data);
-export const updateContact = (id, data) => axios.put(`${BASE_URL}/${id}`, data);
-export const deleteContact = (id) => axios.delete(`${BASE_URL}/${id}`); 
+export const getContacts = () => Axios.get("/contact");
+export const addContact = (data) => Axios.post("/contact", data);
+export const updateContact = (id, data) => Axios.put(`/contact/${id}`, data);
+export const deleteContact = (id) => Axios.delete(`/contact/${id}`);

@@ -14,15 +14,20 @@ function App() {
   const [editContact, setEditContact] = useState(null);
   const [contacts, setContacts] = useState([]);
   const fetchContacts = async () => {
-    const response = await getContacts();
-    setContacts(response?.data);
+    try {
+      const response = await getContacts();
+      setContacts(response?.data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+      toast.error("Failed to fetch contacts. Please try again later.");
+    }
   };
   useEffect(() => {
     fetchContacts();
   }, []);
   const handleDelete = async (id) => {
-    await deleteContact(id);
-    toast.success("Contact deleted successfully!");
+    const response = await deleteContact(id);
+    toast.success(response?.message || "Contact deleted successfully!");
     fetchContacts();
   };
   const columns = [
@@ -60,7 +65,7 @@ function App() {
             <Button
               variant="destructive"
               onClick={() => {
-                handleDelete(row.original.id);
+                handleDelete(row.original._id);
               }}
             >
               <Trash2 />

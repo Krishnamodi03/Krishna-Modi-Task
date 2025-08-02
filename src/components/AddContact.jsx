@@ -41,28 +41,44 @@ const AddContact = ({
       message: "",
     },
   });
+
+  // Reset form when initialData changes (switching between add/edit modes)
   useEffect(() => {
-    if (initialData) {
-      form.reset(initialData);
+    form.reset(
+      initialData || {
+        name: "",
+        email: "",
+        phoneNumber: "",
+        message: "",
+      }
+    );
+  }, [initialData, form]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!open) {
+      form.reset(
+        initialData || {
+          name: "",
+          email: "",
+          phoneNumber: "",
+          message: "",
+        }
+      );
     }
-  }, [initialData]);
+  }, [open, initialData, form]);
 
   const onSubmit = async (values) => {
-    try {
-      if (isEdit) {
-        await updateContact(initialData.id, values);
-        toast.success("Contact updated successfully!");
-      } else {
-        await addContact(values);
-        toast.success("Contact added successfully!");
-      }
-      form.reset();
-      fetchContacts?.();
-      if (onOpenChange) onOpenChange(false);
-    } catch (err) {
-      toast.error("Something went wrong. Please try again.");
-      console.error(err);
+    if (isEdit) {
+      const response = await updateContact(initialData._id, values);
+      toast.success(response?.message || "Contact updated successfully!");
+    } else {
+      const response = await addContact(values);
+      toast.success(response?.message || "Contact added successfully!");
     }
+    form.reset();
+    fetchContacts?.();
+    if (onOpenChange) onOpenChange(false);
   };
 
   return (
